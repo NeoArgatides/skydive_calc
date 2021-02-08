@@ -1,5 +1,6 @@
 package skydive_calc;
 
-public class Main {
+public class Main 
+{
 
 }
