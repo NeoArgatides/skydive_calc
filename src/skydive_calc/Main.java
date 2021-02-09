@@ -7,7 +7,7 @@ public class Main
 {
 	private JFrame frame = new JFrame();
     private JLayeredPane lpane = new JLayeredPane();
-    private JPanel panel1 = new MyPanel("Macintosh/Users/neoargatides/git/skydive_calc/src/skydive_calc");
+    private JPanel panel1 = new MyPanel("/skydive_calc/map.png");
     private JPanel panel2 = new JPanel();
     public Main()
     {
@@ -20,8 +20,8 @@ public class Main
 //      panel2.add(linedraw1);
         panel2.setBounds(200, 100, 100, 100);
         panel2.setOpaque(false);
-        lpane.add(panel1, new Integer(0), 0);
-        lpane.add(panel2, new Integer(1), 0);
+        lpane.add(panel1, 0, 0);
+        lpane.add(panel2, 1, 0);
         frame.pack();
         frame.setVisible(true);
     }
