@@ -1,9 +1,12 @@
 package skydive_calc;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -27,9 +30,20 @@ public class Window extends JFrame
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	    setSize(screenSize.width, screenSize.height);
 	    
-	    int width = (int)Math.round(screenSize.height * (203/227));
+	    JPanel mainPanel = new JPanel();
+	    mainPanel.setSize(screenSize.width, screenSize.height);
+	    getContentPane().add(mainPanel);
+	    mainPanel.setLayout(new BorderLayout(0, 0));
+	    
 	    JLabel imageLabel = new JLabel();
-	    imageLabel.setIcon(new ImageIcon(new ImageIcon(map).getImage().getScaledInstance(939, screenSize.height, Image.SCALE_DEFAULT)));
-	    add(imageLabel);
+	    imageLabel.setVerticalAlignment(SwingConstants.TOP);
+	    imageLabel.setIcon(new ImageIcon(new ImageIcon(map).getImage().getScaledInstance(939, mainPanel.getHeight(), Image.SCALE_SMOOTH)));
+	    mainPanel.add(imageLabel, BorderLayout.LINE_START);
+	    
+	    JPanel optionPanel = new JPanel();
+	    optionPanel.setLayout(new BoxLayout(optionPanel, BoxLayout.PAGE_AXIS));
+	    
 	}
+	
+	
 }
