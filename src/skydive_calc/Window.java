@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.*;
+import java.awt.Component;
 
 public class Window extends JFrame
 {
@@ -56,6 +57,13 @@ public class Window extends JFrame
         time.setHorizontalAlignment(SwingConstants.CENTER);
         time.setFont(new Font("Lucida Grande", Font.PLAIN, 13));
 	    infoPanel.add(time);
+	    
+	    JTextField timeField = new JTextField(20);
+	    timeField.setMaximumSize(new Dimension(Integer.MAX_VALUE, timeField.getPreferredSize().height));
+	    timeField.setText("test");
+	    timeField.setHorizontalAlignment(SwingConstants.CENTER);
+	    timeField.setEditable(false);
+	    infoPanel.add(timeField);
 	    
 	    JButton mapBtn = new JButton("Clear Map");
 	    optionPanel.add(mapBtn);
@@ -108,7 +116,7 @@ public class Window extends JFrame
         	public void actionPerformed(ActionEvent e)
         	{
         		((mapImage) imageLabel).setStartLine(359, 603);
-        		((mapImage) imageLabel).calcTime();
+        		timeField.setText(calcTime(((mapImage) imageLabel).calcLength()));
         	}
         });
 	    
@@ -119,7 +127,7 @@ public class Window extends JFrame
         	public void actionPerformed(ActionEvent e)
         	{
         		((mapImage) imageLabel).setStartLine(420, 122);
-        		time.setText("Time: " + ((mapImage) imageLabel).calcTime());
+        		timeField.setText(calcTime(((mapImage) imageLabel).calcLength()));
         	}
         });
 	    
@@ -129,7 +137,7 @@ public class Window extends JFrame
 			public void mousePressed(MouseEvent e) 
 			{
 				((mapImage) imageLabel).mouseClicked(e.getX(), e.getY());
-				time.setText("Time: " + ((mapImage) imageLabel).calcTime());
+				timeField.setText(calcTime(((mapImage) imageLabel).calcLength()));
 			}
 		});
 	    
@@ -161,12 +169,9 @@ public class Window extends JFrame
 		    repaint();
 		}
 		
-		public String calcTime()
+		public int calcLength()
 		{
-			String time = "";
-			
-			length = Math.sqrt(Math.pow(Math.abs(endX - startX), 2) + Math.pow(Math.abs(endY - startY), 2));
-			return time;
+			return (int) Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
 		}
 		
 		public void setStartLine(int x, int y)
@@ -182,6 +187,26 @@ public class Window extends JFrame
 			endY = y;
 			repaint();
 		}
+	}
+	
+	private String calcTime(int length)
+	{	
+		int hours = 0;
+		int minutes = 0;
+		double distance = length;
+		int seconds = (int) (distance * 16.5517);
+		
+		for(; seconds >= 3600; seconds -= 3600)
+		{
+			hours++;
+		}
+		
+		for(; seconds >= 60; seconds -= 60)
+		{
+			minutes++;
+		}
+		
+		return hours + " hours " + minutes + " minutes " + seconds + " seconds";
 	}
 	
 }
