@@ -60,7 +60,7 @@ public class Window extends JFrame
 	    
 	    JTextField timeField = new JTextField(20);
 	    timeField.setMaximumSize(new Dimension(Integer.MAX_VALUE, timeField.getPreferredSize().height));
-	    timeField.setText("test");
+	    timeField.setText("Click a spot on the map");
 	    timeField.setHorizontalAlignment(SwingConstants.CENTER);
 	    timeField.setEditable(false);
 	    infoPanel.add(timeField);
