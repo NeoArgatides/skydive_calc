@@ -1,10 +1,8 @@
 package skydive_calc;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -15,14 +13,30 @@ import java.awt.event.MouseEvent;
 import javax.swing.*;
 import java.awt.Component;
 
-public class Window extends JFrame
+public class MainWindow extends JFrame
 {
 	private static final long serialVersionUID = 1L;
 	String map = "src/skydive_calc/map.png";
+	ImageIcon clearMap;
+	ImageIcon anchorMap;
+	ImageIcon solidsMap;
+	ImageIcon shardMap;
 	
-	public Window() 
+	public MainWindow() 
 	{
+		initMapImages();
 		setupUI();
+	}
+	
+	private void initMapImages()
+	{
+		int width = 812;
+		int height = 908;
+		int scaleHint = Image.SCALE_SMOOTH;
+		clearMap = new ImageIcon(new ImageIcon("src/skydive_calc/map.png").getImage().getScaledInstance(width, height, scaleHint));
+		anchorMap = new ImageIcon(new ImageIcon("src/skydive_calc/anchor_map.png").getImage().getScaledInstance(width, height, scaleHint));
+		solidsMap = new ImageIcon(new ImageIcon("src/skydive_calc/solid_map.png").getImage().getScaledInstance(width, height, scaleHint));
+		shardMap = new ImageIcon(new ImageIcon("src/skydive_calc/shard_map.png").getImage().getScaledInstance(width, height, scaleHint));
 	}
 	
 	private void setupUI()
@@ -36,10 +50,10 @@ public class Window extends JFrame
 	    getContentPane().add(mainPanel);
 	    mainPanel.setLayout(new BorderLayout(0, 0));
 	    
-	    JLabel imageLabel = new mapImage();
+	    MapImage imageLabel = new MapImage();
 	    imageLabel.setVerticalAlignment(SwingConstants.TOP);
 	    mainPanel.add(imageLabel, BorderLayout.LINE_START);
-	    imageLabel.setIcon(new ImageIcon(new ImageIcon(map).getImage().getScaledInstance(812, 908, Image.SCALE_SMOOTH)));
+	    imageLabel.setIcon(clearMap);
 	    
 	    JPanel menuPanel = new JPanel();
 	    menuPanel.setLayout(new GridLayout(1, 2));
@@ -71,8 +85,7 @@ public class Window extends JFrame
         {
         	public void actionPerformed(ActionEvent e)
         	{
-        		map = "src/skydive_calc/map.png";
-        		imageLabel.setIcon(new ImageIcon(new ImageIcon(map).getImage().getScaledInstance(812, 908, Image.SCALE_SMOOTH)));
+        		imageLabel.setIcon(clearMap);
         	}
         });
 	    
@@ -82,8 +95,7 @@ public class Window extends JFrame
         {
         	public void actionPerformed(ActionEvent e)
         	{
-        		map = "src/skydive_calc/anchor_map.png";
-        		imageLabel.setIcon(new ImageIcon(new ImageIcon(map).getImage().getScaledInstance(812, 908, Image.SCALE_SMOOTH)));
+        		imageLabel.setIcon(anchorMap);
         	}
         });
 	    
@@ -93,8 +105,7 @@ public class Window extends JFrame
         {
         	public void actionPerformed(ActionEvent e)
         	{
-        		map = "src/skydive_calc/solid_map.png";
-        		imageLabel.setIcon(new ImageIcon(new ImageIcon(map).getImage().getScaledInstance(812, 908, Image.SCALE_SMOOTH)));
+        		imageLabel.setIcon(solidsMap);
         	}
         });
 	    
@@ -104,8 +115,7 @@ public class Window extends JFrame
         {
         	public void actionPerformed(ActionEvent e)
         	{
-        		map = "src/skydive_calc/shard_map.png";
-        		imageLabel.setIcon(new ImageIcon(new ImageIcon(map).getImage().getScaledInstance(812, 908, Image.SCALE_SMOOTH)));
+        		imageLabel.setIcon(shardMap);
         	}
         });
 	    
@@ -115,8 +125,8 @@ public class Window extends JFrame
         {
         	public void actionPerformed(ActionEvent e)
         	{
-        		((mapImage) imageLabel).setStartLine(359, 603);
-        		timeField.setText(calcTime(((mapImage) imageLabel).calcLength()));
+        		imageLabel.setStartLine(359, 603);
+        		timeField.setText(calcTime(((MapImage) imageLabel).calcLength()));
         	}
         });
 	    
@@ -126,8 +136,8 @@ public class Window extends JFrame
         {
         	public void actionPerformed(ActionEvent e)
         	{
-        		((mapImage) imageLabel).setStartLine(420, 122);
-        		timeField.setText(calcTime(((mapImage) imageLabel).calcLength()));
+        		imageLabel.setStartLine(420, 122);
+        		timeField.setText(calcTime(((MapImage) imageLabel).calcLength()));
         	}
         });
 	    
@@ -136,65 +146,20 @@ public class Window extends JFrame
 			@Override
 			public void mousePressed(MouseEvent e) 
 			{
-				((mapImage) imageLabel).mouseClicked(e.getX(), e.getY());
-				timeField.setText(calcTime(((mapImage) imageLabel).calcLength()));
+				imageLabel.mouseClicked(e.getX(), e.getY());
+				timeField.setText(calcTime((imageLabel.calcLength())));
 			}
 		});
 	    
 	}
 	
-	class mapImage extends JLabel
-	{
-		private static final long serialVersionUID = 1L;
-		
-		int startX = 359;
-		int startY = 603;
-		int endX = 359;
-		int endY = 603;
-		double length;
-		
-		@Override
-        protected void paintComponent(Graphics g) 
-		{
-            super.paintComponent(g);
-            g.setColor(Color.RED);
-            g.drawLine(startX, startY, endX, endY);
-            g.dispose();
-        }
-		
-		public void mouseClicked(int x, int y) 
-		{
-		    endX = x;
-		    endY = y;
-		    repaint();
-		}
-		
-		public int calcLength()
-		{
-			return (int) Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
-		}
-		
-		public void setStartLine(int x, int y)
-		{
-			startX = x;
-			startY = y;
-			repaint();
-		}
-		
-		public void setEndLine(int x, int y)
-		{
-			endX = x;
-			endY = y;
-			repaint();
-		}
-	}
-	
-	private String calcTime(int length)
+	private String calcTime(int pixelLength)
 	{	
+		double secPerPixel = 16.5517;
 		int hours = 0;
 		int minutes = 0;
-		double distance = length;
-		int seconds = (int) (distance * 16.5517);
+		//double distance = pixelLength;
+		int seconds = (int) (pixelLength * secPerPixel);
 		
 		for(; seconds >= 3600; seconds -= 3600)
 		{
